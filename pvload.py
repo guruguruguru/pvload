@@ -11,7 +11,7 @@ from pprint import pprint
 
 charger = GoeCharger('192.168.178.65')
 senechost = '192.168.178.69'
-cardtounlock = 1
+cardtounlock = 0
 logging.basicConfig(filename='pvload.log',format='%(asctime)s %(message)s', level=logging.DEBUG)
 verbose = True
 
@@ -23,7 +23,7 @@ if verbose:
     print("Car Status: "+goestatus['car_status'])
     print("Unlocked by Card: "+str(goestatus['unlocked_by_card']))
     print("Cable: "+str(goestatus['cable_max_current']))
-    print("Charging Power: "+str(goestatus['p_all']))
+    print("Charging Power: "+str((goestatus['p_all'] * 10)))
     print("\n\n")
 
 #check connected RFID
@@ -61,7 +61,7 @@ else:
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run(senechost, verbose=False))
     maxcurrent = int(goestatus['charger_max_current'])
-    overload = senec.solar_generated_power - senec.house_power - goestatus['p_all']
+    overload = senec.solar_generated_power - senec.house_power - ( goestatus['p_all'] * 10 )
     ##################################
     # overwriting overload for testing
     #overload = 1401
