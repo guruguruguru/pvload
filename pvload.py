@@ -79,7 +79,7 @@ else:
             if verbose:
                 print("Overload > 3600, setting power to 16")
             if maxcurrent != 16:
-                charger.setPVMaxCurrent(16)
+                charger.setTmpMaxCurrent(16)
                 logging.info("Setting Power to 16")
                 exit(0)
             else:
@@ -90,7 +90,7 @@ else:
             print("Overload >1400 <3600 setting power to "+str(overloadamp))
         if maxcurrent != overloadamp:
             logging.info("Setting Power to "+str(overloadamp))
-            charger.setPVMaxCurrent(overloadamp)
+            charger.setTmpMaxCurrent(overloadamp)
         else:
             if verbose:
                 print("Correct power value set, exiting")
