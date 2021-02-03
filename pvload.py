@@ -2,6 +2,7 @@
 # for this to work you need: 
 # - https://github.com/cathiele/goecharger
 # - https://github.com/mchwalisz/pysenec
+import sys
 from goecharger import GoeCharger
 import aiohttp
 import pysenec
@@ -13,12 +14,14 @@ charger = GoeCharger('192.168.178.65')
 senechost = '192.168.178.69'
 cardtounlock = 0
 logging.basicConfig(filename='pvload.log',format='%(asctime)s %(message)s', level=logging.DEBUG)
-verbose = True
+if str(sys.argv[1]) == "-v":
+    verbose = True
+else:
+    verbose = False
 
 goestatus = charger.requestStatus()
 if verbose:
     print("Actual Power: "+str(goestatus['charger_max_current']))
-    print("PV Charging Power: "+str(goestatus['charger_pv_max_current']))
     print("Allow Charging: "+goestatus['allow_charging'])
     print("Car Status: "+goestatus['car_status'])
     print("Unlocked by Card: "+str(goestatus['unlocked_by_card']))
@@ -64,7 +67,7 @@ else:
     overload = senec.solar_generated_power - senec.house_power - ( goestatus['p_all'] * 10 )
     ##################################
     # overwriting overload for testing
-    #overload = 1401
+    overload = 1401
     ##################################
     overloadamp = int(overload/230)
 
