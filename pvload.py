@@ -67,7 +67,7 @@ else:
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run(senechost, verbose=False))
     maxcurrent = int(goestatus['charger_max_current'])
-    overload = senec.solar_generated_power - senec.house_power - ( goestatus['p_all'] * 10 )
+    overload = senec.solar_generated_power - senec.house_power + ( goestatus['p_all'] * 10 )
     ##################################
     # overwriting overload for testing
     overload = 1401
