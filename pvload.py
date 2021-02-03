@@ -12,10 +12,13 @@ from pprint import pprint
 
 charger = GoeCharger('192.168.178.65')
 senechost = '192.168.178.69'
-cardtounlock = 0
-logging.basicConfig(filename='pvload.log',format='%(asctime)s %(message)s', level=logging.DEBUG)
-if str(sys.argv[1]) == "-v":
-    verbose = True
+cardtounlock = 1
+logging.basicConfig(filename='pvload.log',format='%(asctime)s %(message)s', level=logging.INFO)
+if len(sys.argv) > 1:
+    if str(sys.argv[1]) == "-v":
+        verbose = True
+    else:
+        verbose = False
 else:
     verbose = False
 
