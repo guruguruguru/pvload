@@ -70,7 +70,7 @@ else:
     overload = senec.solar_generated_power - senec.house_power + ( goestatus['p_all'] * 10 )
     ##################################
     # overwriting overload for testing
-    overload = 1401
+    #overload = 1401
     ##################################
     overloadamp = int(overload/230)
 
