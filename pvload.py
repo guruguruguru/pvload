@@ -12,7 +12,6 @@ from pprint import pprint
 
 charger = GoeCharger('192.168.178.65')
 senechost = '192.168.178.69'
-cardtounlock = 1
 logging.basicConfig(filename='pvload.log',format='%(asctime)s %(message)s', level=logging.INFO)
 if len(sys.argv) > 1:
     if str(sys.argv[1]) == "-v":
@@ -29,13 +28,13 @@ if verbose:
     print("Car Status: "+goestatus['car_status'])
     print("Unlocked by Card: "+str(goestatus['unlocked_by_card']))
     print("Cable: "+str(goestatus['cable_max_current']))
-    print("Charging Power: "+str((goestatus['p_all'] * 10)))
+    print("Charging Power: "+str((goestatus['p_all'] * 1000)))
     print("\n\n")
 
-#check connected RFID
-if goestatus['unlocked_by_card'] != cardtounlock:
+#check connected cable
+if goestatus['cable_max_current'] != 20:
     if verbose:
-        print("Charger not unlocked by PV RFID, exiting")
+        print("Wrong Cable connected, exiting")
 #    if goestatus['allow_charging'] == 'off':
 #        if verbose:
 #            print("Charger seems to be set to PV Loading, although PV RFID is not connected. Will set to default values")
@@ -43,7 +42,6 @@ if goestatus['unlocked_by_card'] != cardtounlock:
 #        charger.setAllowCharging(0)
     exit(0)
 else:
-    # check for connected cable: (1 phase/ 16 A)
     # start senec stuff
     async def run(host, verbose=False):
         global senec
@@ -67,7 +65,13 @@ else:
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run(senechost, verbose=False))
     maxcurrent = int(goestatus['charger_max_current'])
-    overload = senec.solar_generated_power - senec.house_power + ( goestatus['p_all'] * 10 )
+    overload = senec.solar_generated_power - senec.house_power + ( goestatus['p_all'] * 1000 )
+
+    if verbose:
+        print(f"Solar Panel generate: {senec.solar_generated_power} W")
+        print(f"House energy use: {senec.house_power} W")
+        print("Charging Power: "+str((goestatus['p_all'] * 1000)))
+
     ##################################
     # overwriting overload for testing
     #overload = 1401
