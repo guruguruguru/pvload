@@ -31,6 +31,12 @@ if verbose:
     print("Charging Power: "+str((goestatus['p_all'] * 1000)))
     print("\n\n")
 
+# check if car is connected
+if goestatus['car_status'] == 'Charger ready, no vehicle':
+    if verbose:
+        print("No car connected, exiting")
+    exit(0)
+
 #check connected cable
 if goestatus['cable_max_current'] != 20:
     # if 32A cable is connected set loading to allowed and charge with max power
