@@ -33,13 +33,16 @@ if verbose:
 
 #check connected cable
 if goestatus['cable_max_current'] != 20:
+    # if 32A cable is connected set loading to allowed and charge with max power
+    if goestatus['cable_max_current'] == 32:
+        if goestatus['allow_charging'] == 'off':
+            charger.setAllowCharging(True)
+            logging.info("Setting Charging to True")
+            if int(goestatus['charger_max_current']) != 16:
+                charger.setTmpMaxCurrent(16)
+                logging.info("Setting Power to Max")
     if verbose:
         print("Wrong Cable connected, exiting")
-#    if goestatus['allow_charging'] == 'off':
-#        if verbose:
-#            print("Charger seems to be set to PV Loading, although PV RFID is not connected. Will set to default values")
-#        logging.info("Charger seems to be set to PV Loading, although PV RFID is not connected. Will set to default values")
-#        charger.setAllowCharging(0)
     exit(0)
 else:
     # start senec stuff
