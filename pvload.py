@@ -28,7 +28,8 @@ if verbose:
     print("Car Status: "+goestatus['car_status'])
     print("Unlocked by Card: "+str(goestatus['unlocked_by_card']))
     print("Cable: "+str(goestatus['cable_max_current']))
-    print("Charging Power: "+str((goestatus['p_all'] * 1000)))
+    print("Load since connected: "+str(goestatus['current_session_charged_energy']))
+
     print("\n\n")
 
 # check if car is connected
@@ -119,6 +120,6 @@ else:
         if goestatus['allow_charging'] == 'off':
             exit(0)
         charger.setAllowCharging(False)
-        logging.info("Overload too small, disabling charging")
+        logging.info("Overload too small, disabling charging - Load since connected:"+str(goestatus['current_session_charged_energy']))
         if verbose:
             print("PV Overload too small, disabling charging")
