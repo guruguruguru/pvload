@@ -42,12 +42,9 @@ if goestatus['car_status'] == 'Charger ready, no vehicle':
 if goestatus['cable_max_current'] != 20:
     # if 32A cable is connected set loading to allowed and charge with max power
     if goestatus['cable_max_current'] == 32:
-        if goestatus['allow_charging'] == 'off':
-            charger.setAllowCharging(True)
-            logging.info("Setting Charging to True")
-            if int(goestatus['charger_max_current']) != 16:
-                charger.setTmpMaxCurrent(16)
-                logging.info("Setting Power to Max")
+        if int(goestatus['charger_max_current']) != 16:
+            charger.setTmpMaxCurrent(16)
+            logging.info("Setting Power to Max")
     if verbose:
         print("Wrong Cable connected, exiting")
     exit(0)
