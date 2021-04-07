@@ -10,9 +10,11 @@ import asyncio
 import logging
 from pprint import pprint
 
+logfile = '/var/www/html/pvload/pvload.log'
+
 charger = GoeCharger('192.168.178.65')
 senechost = '192.168.178.69'
-logging.basicConfig(filename='pvload.log',format='%(asctime)s %(message)s', level=logging.INFO)
+logging.basicConfig(filename=(logfile),format='%(asctime)s %(message)s', level=logging.INFO)
 if len(sys.argv) > 1:
     if str(sys.argv[1]) == "-v":
         verbose = True
