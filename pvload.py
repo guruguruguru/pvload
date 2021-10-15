@@ -108,7 +108,7 @@ else:
         if verbose:
             print("Overload >1400 <3600 setting power to "+str(overloadamp))
         if maxcurrent != overloadamp:
-            logging.info("Setting Power to "+str(overloadamp))
+            logging.info("Setting Power to "+str(overloadamp)," Load since connected:"+str(goestatus['current_session_charged_energy']))
             charger.setTmpMaxCurrent(overloadamp)
         else:
             if verbose:
