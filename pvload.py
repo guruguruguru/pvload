@@ -75,11 +75,17 @@ else:
     loop.run_until_complete(run(senechost, verbose=False))
     maxcurrent = int(goestatus['charger_max_current'])
     overload = senec.solar_generated_power - senec.house_power + ( goestatus['p_all'] * 1000 )
+    charge = round(senec.battery_charge_percent, 0)
 
     if verbose:
         print(f"Solar Panel generate: {senec.solar_generated_power} W")
         print(f"House energy use: {senec.house_power} W")
-        print("Charging Power: "+str((goestatus['p_all'] * 1000)))
+        print(f"Charging Power: "+str((goestatus['p_all'] * 1000)))
+        print(f"Battery Charge Percent: {charge}")
+        if charge > 50:
+            print(f"load from battery ok")
+        else:
+            print(f"battery too low")
 
     ##################################
     # overwriting overload for testing
@@ -106,15 +112,25 @@ else:
                     print("Correct power value set, exiting")
                 exit(0)
         if verbose:
-            print("Overload >1400 <3600 setting power to "+str(overloadamp))
+            print("Overload >1400 <3600 setting power to "+str(overloadamp)," Load since connected:"+str(goestatus['current_session_charged_energy']))
         if maxcurrent != overloadamp:
-            logging.info("Setting Power to "+str(overloadamp)," Load since connected:"+str(goestatus['current_session_charged_energy']))
+            logging.info("Setting Power to %s - Load since connected %s", str(overloadamp), str(goestatus['current_session_charged_energy']))
             charger.setTmpMaxCurrent(overloadamp)
         else:
             if verbose:
                 print("Correct power value set, exiting")
                 exit(0)
     else:
+        #check for battery state
+        if ((charge > 50) and (overload > 500)):
+            if maxcurrent == 6:
+                if verbose:
+                    print("Correct power value set, exiting")
+                exit (0)
+            charger.setTmpMaxCurrent(6)
+            logging.info("Setting Power to 6 as battery has more than 50% and overload is still over 500 - Load since connected: "+str(goestatus['current_session_charged_energy']))
+            #logging.info("Setting Power to 6 as battery has more than 50% and overload is still > 500")
+            exit(0)
         # disable charging
         if goestatus['allow_charging'] == 'off':
             exit(0)
@@ -122,3 +138,4 @@ else:
         logging.info("Overload too small, disabling charging - Load since connected:"+str(goestatus['current_session_charged_energy']))
         if verbose:
             print("PV Overload too small, disabling charging")
+
